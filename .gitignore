@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# 虚拟环境
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+
+# 项目特定
+calc_history.json
+*.spec
+打包命令
+
+# 测试文件
+Tests/
+*test*.py
+
+# 旧版本和临时文件
+day4_*.py
+enhance_*.py
+advanced_*.py
+main.py

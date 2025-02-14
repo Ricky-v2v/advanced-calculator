@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "advanced-calculator"
+version = "1.0.0"
+description = "高级科学计算器，支持基本运算、科学函数、单位转换、复数运算等功能"
+requires-python = ">=3.8"
+dependencies = [
+    "colorama>=0.4.6",
+]
+
+[project.scripts]
+calc-cli = "calculator_cli:ScientificCalculator().run"
+calc-gui = "gui_calculator:CalculatorGUI().run"

@@ -131,7 +131,8 @@ class CalculatorGUI:
         search_frame.pack(fill=tk.X, pady=5)
         
         self.search_var = tk.StringVar()
-        self.search_var.trace('w', self.filter_history)
+        # 修改 trace 方法的调用方式
+        self.search_var.trace_add('write', self.filter_history)  # 使用 trace_add 替代 trace
         ttk.Entry(search_frame, textvariable=self.search_var).pack(side=tk.LEFT, padx=5)
         ttk.Button(search_frame, text="搜索", command=self.filter_history).pack(side=tk.LEFT)
 

@@ -12,9 +12,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'calc-cli=Calculator.calculator_cli:main',  # 更新这里
-            'calc-gui=Calculator.gui_calculator:main',
+            'calc-cli=calculator_cli:ScientificCalculator().run',
+            'calc-gui=gui_calculator:CalculatorGUI().run',
         ],
     },
-    python_requires='>=3.8',
 )

@@ -2,40 +2,79 @@
 
 [English](README_EN.md) | 简体中文
 
-一个功能强大的科学计算器...
-
-一个功能强大的科学计算器，支持基本运算、科学函数、单位转换、复数运算等功能。
+一个功能强大的科学计算器，支持命令行和图形界面，提供基本运算、科学函数计算、复数运算等功能。
 
 ## 功能特点
 
-- 基本数学运算
-- 科学函数计算（sin, cos, log等）
-- 单位转换（长度、重量、温度、面积）
-- 复数运算
+- 基本运算：+, -, *, /, ^, %
+- 科学函数：sqrt, sin, cos, tan, log, log10, abs
+- 复数运算：+c, -c, *c, /c, abs_c, real, imag
 - 历史记录管理
-- 命令行和图形界面两种使用方式
+- 多行输入支持
+- 命令自动补全
+- 国际化支持
+- 自动更新检查
 
-## 安装方法
+## 安装说明
 
-### 方法一：使用可执行文件
+1. 克隆仓库：
+```bash
+git clone <repository-url>
+cd Calculator
 
-直接下载并运行对应系统的可执行文件：
-- calculator-cli：命令行版本
-- calculator-gui：图形界面版本
 
-### 方法二：从源码安装
+2. 安装依赖：
+```bash
+pip install -r requirements.txt
+ ```
+
+## 使用方法
+### 命令行界面
+运行命令行版本：
 
 ```bash
-# 创建并激活虚拟环境
-python -m venv venv
-source venv/bin/activate  # Windows 使用: venv\Scripts\activate
+python calculator_cli.py
+ ```
 
-# 安装依赖
-pip install -r requirements.txt
+支持的命令：
 
-# 安装项目
-pip install .
+- q: 退出程序
+- h: 显示帮助
+- c: 清屏
+- l: 显示历史
+- m: 切换多行模式
+### 图形界面
+运行图形界面版本：
 
-## 系统要求
-- Python 3.8 或更高版本
-- 操作系统：Windows/macOS/Linux
+```bash
+python gui_calculator.py
+ ```
+
+## 构建可执行文件
+使用 PyInstaller 构建独立可执行文件：
+
+```bash
+python build.py
+ ```
+
+## 项目结构
+```plaintext
+Calculator/
+├── calculator_cli.py    # 命令行界面主程序
+├── gui_calculator.py    # 图形界面主程序
+├── build.py            # 构建脚本
+├── config.yaml         # 配置文件
+├── i18n/              # 国际化文件
+│   └── zh_CN.json     # 中文翻译
+└── utils/             # 工具模块
+    ├── logger.py      # 日志工具
+    └── version_checker.py  # 版本检查
+ ```
+
+## 开发说明
+- Python 版本要求：3.8+
+- 使用 PyInstaller 打包
+- 遵循 PEP 8 编码规范
+- 使用 pytest 进行单元测试
+## 许可证
+MIT License

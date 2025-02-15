@@ -1,0 +1,13 @@
+{
+    "basic_calc": "基本计算",
+    "unit_conv": "单位转换",
+    "history": "历史记录",
+    "error": "错误",
+    "system_error": "系统错误",
+    "div_zero": "除数不能为零",
+    "help_title": "帮助信息",
+    "basic_ops": "基本运算",
+    "func_call": "函数调用",
+    "result": "结果",
+    "exit": "退出"
+}

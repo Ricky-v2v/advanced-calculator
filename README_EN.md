@@ -2,36 +2,78 @@
 
 [简体中文](README.md) | English
 
-A powerful scientific calculator...
+A powerful scientific calculator with both command-line and graphical interfaces, supporting basic arithmetic, scientific functions, and complex number operations.
 
-A powerful scientific calculator supporting basic arithmetic, scientific functions, unit conversion, and complex number operations.
+## Key Features
 
-## Features
-
-- Basic arithmetic operations
-- Scientific functions (sin, cos, log, etc.)
-- Unit conversion (length, weight, temperature, area)
-- Complex number operations
-- History management
-- Both CLI (Command Line Interface) and GUI (Graphical User Interface)
+- Basic Operations: +, -, *, /, ^, %
+- Scientific Functions: sqrt, sin, cos, tan, log, log10, abs
+- Complex Number Operations: +c, -c, *c, /c, abs_c, real, imag
+- History Management
+- Multi-line Input Support
+- Command Auto-completion
+- Internationalization Support
+- Automatic Update Check
 
 ## Installation
 
-### Method 1: Using Executable Files
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd Calculator
 
-Download and run the executable file for your system:
-- calculator-cli: Command line version
-- calculator-gui: Graphical interface version
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+ ```
 
-### Method 2: From Source Code
+## Usage
+### Command Line Interface
+Run the CLI version:
 
 ```bash
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate  # For Windows use: venv\Scripts\activate
+python calculator_cli.py
+ ```
 
-# Install dependencies
-pip install -r requirements.txt
+Available commands:
 
-# Install project
-pip install .
+- q: Quit program
+- h: Show help
+- c: Clear screen
+- l: Show history
+- m: Toggle multi-line mode
+### Graphical Interface
+Run the GUI version:
+
+```bash
+python gui_calculator.py
+ ```
+
+## Building Executable
+Build standalone executable using PyInstaller:
+
+```bash
+python build.py
+ ```
+
+## Project Structure
+```plaintext
+Calculator/
+├── calculator_cli.py    # Command line interface
+├── gui_calculator.py    # Graphical interface
+├── build.py            # Build script
+├── config.yaml         # Configuration file
+├── i18n/              # Internationalization
+│   └── zh_CN.json     # Chinese translation
+└── utils/             # Utility modules
+    ├── logger.py      # Logging utility
+    └── version_checker.py  # Version checker
+ ```
+
+## Development Notes
+- Python Version: 3.8+
+- Packaging: PyInstaller
+- Coding Style: PEP 8
+- Testing: pytest
+## License
+MIT License

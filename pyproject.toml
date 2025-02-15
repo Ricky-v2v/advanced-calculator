@@ -9,6 +9,9 @@ description = "高级科学计算器，支持基本运算、科学函数、单�
 requires-python = ">=3.8"
 dependencies = [
     "colorama>=0.4.6",
+    "pyyaml>=6.0",
+    "requests>=2.28.0",
+    "packaging>=23.0",
 ]
 
 [project.scripts]

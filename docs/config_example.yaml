@@ -1,0 +1,23 @@
+# 配置文件示例及说明
+
+# 基本配置
+version: "1.0.0"
+language: "zh_CN"
+
+# 日志配置
+logging:
+  level: "INFO"
+  file: "calculator.log"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# 历史记录配置
+history:
+  max_memory: 10
+  max_display: 5
+  file: "calc_history.json"
+
+# 界面配置
+ui:
+  color_enabled: true
+  auto_complete: true
+  multi_line: false

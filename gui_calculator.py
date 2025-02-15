@@ -4,6 +4,21 @@ from calculator_cli import ScientificCalculator
 from unit_converter import UnitConverter, UnitType
 
 class CalculatorGUI:
+    """图形界面计算器类
+    
+    功能：
+    1. 基本计算界面（数字键盘和运算符）
+    2. 科学函数计算（三角函数、对数等）
+    3. 单位转换功能
+    4. 历史记录管理和搜索
+    
+    界面组件：
+        root (Tk): 主窗口
+        notebook (Notebook): 标签页容器
+        expr_var (StringVar): 表达式输入变量
+        history_list (Listbox): 历史记录列表
+        calculator (ScientificCalculator): 计算器核心实例
+    """
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("高级科学计算器")

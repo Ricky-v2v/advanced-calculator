@@ -1,0 +1,15 @@
+version: 1.0.0
+language: zh_CN  # 支持 zh_CN, en_US
+logging:
+  level: INFO
+  file: calculator.log
+history:
+  max_memory: 10
+  max_display: 5
+  file: calc_history.json
+settings:
+  precision: 6
+  history_size: 10
+  display_size: 5
+  auto_update_check: true
+  complex_support: true

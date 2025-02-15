@@ -7,7 +7,19 @@ class UnitType(Enum):
     AREA = "面积"
 
 class UnitConverter:
-    """单位转换器"""
+    """单位转换器类
+    
+    支持的单位类型：
+    1. 长度：km, m, cm, mm, mile, yard, foot, inch
+    2. 质量：kg, g, mg, lb, oz
+    3. 温度：C, F, K
+    4. 时间：year, month, day, hour, minute, second
+    
+    转换规则：
+    - 每种单位类型都有一个基准单位（如长度是米，质量是千克）
+    - 所有转换先转为基准单位，再转为目标单位
+    - 温度转换使用特殊公式
+    """
     
     CONVERSIONS = {
         UnitType.LENGTH: {

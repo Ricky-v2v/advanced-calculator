@@ -15,14 +15,17 @@ env/
 .idea/
 .vscode/
 
+# 日志文件
+*.log
+
 # 项目特定
 calc_history.json
 *.spec
 打包命令
 
 # 测试文件
-Tests/
 *test*.py
+htmlcov/
 
 # 旧版本和临时文件
 day4_*.py

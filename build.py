@@ -18,8 +18,10 @@ def build():
             '--onefile',
             '--clean',
             '--add-data', f'config.yaml{os.pathsep}.',
-            '--add-data', f'i18n/*{os.pathsep}i18n',
-            '--add-data', f'utils/*{os.pathsep}utils',  # 添加这行
+            '--add-data', f'src/i18n/en_US.json{os.pathsep}src/i18n',
+            '--hidden-import', 'PyQt6.QtCore',
+            '--hidden-import', 'PyQt6.QtWidgets',
+            '--hidden-import', 'PyQt6.QtGui',
         ]
         
         # 获取版本号
@@ -31,7 +33,7 @@ def build():
         # 构建 CLI 版本
         print("构建命令行版本...")
         PyInstaller.__main__.run([
-            'calculator_cli.py',
+            'src/calculator_cli.py',  # 更新路径
             f'--name=calculator-cli-{platform.system().lower()}',
             *common_options,
         ])
@@ -39,7 +41,7 @@ def build():
         # 构建 GUI 版本
         print("构建图形界面版本...")
         PyInstaller.__main__.run([
-            'gui_calculator.py',
+            'src/gui_calculator.py',  # 更新路径
             f'--name=calculator-gui-{platform.system().lower()}',
             '--windowed',
             *common_options,

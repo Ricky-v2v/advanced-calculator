@@ -1,9 +1,9 @@
 # 在文件顶部添加
 import sys
 import os
-from utils.logger import setup_logger
-from i18n.translator import Translator
-from utils.version_checker import check_update
+from src.utils.logger import setup_logger
+from src.i18n.translator import Translator
+from src.utils.version_checker import check_update
 import math
 import re
 import json
@@ -143,40 +143,39 @@ class CalculatorCore:
     # - validator: 参数验证函数
     # - error_message: 验证失败时的错误信息
     FUNCTIONS = {
-        'sqrt': (math.sqrt, 1, lambda x: x >= 0, "负数不能开平方"),
-        'sin': (lambda x: math.sin(math.radians(x)), 1, lambda _: True, ""),
-        'cos': (lambda x: math.cos(math.radians(x)), 1, lambda _: True, ""),
-        'tan': (lambda x: math.tan(math.radians(x)), 1, lambda x: x % 90 != 0, "角度不能是90的奇数倍"),
-        'log': (math.log, 1, lambda x: x > 0, "需要正数参数"),
-        'log10': (math.log10, 1, lambda x: x > 0, "需要正数参数"),
+        'sqrt': (math.sqrt, 1, lambda x: x >= 0, "error.negative_sqrt"),
+        'sin': (math.sin, 1, lambda _: True, ""),
+        'cos': (math.cos, 1, lambda _: True, ""),
+        'tan': (math.tan, 1, lambda x: x % 90 != 0, "error.invalid_tan"),
+        'log': (math.log, 1, lambda x: x > 0, "error.positive_required"),
+        'log10': (math.log10, 1, lambda x: x > 0, "error.positive_required"),
         'abs': (abs, 1, lambda _: True, "")
     }
     
-    # 运算符映射格式：
-    # 'operator': lambda a, b: operation(a, b)
-    # 对于需要异常处理的操作，使用条件表达式和 raise_ 函数
+    # 添加基本运算符映射
     OPERATORS = {
         '+': lambda a, b: a + b,
         '-': lambda a, b: a - b,
         '*': lambda a, b: a * b,
-        '/': lambda a, b: a / b if b != 0 else raise_(ValueError("除数不能为零")),
+        '/': lambda a, b: a / b if b != 0 else raise_(ValueError("error.division_by_zero")),
+        '%': lambda a, b: a % b if b != 0 else raise_(ValueError("error.division_by_zero")),
         '^': lambda a, b: a ** b,
-        '%': lambda a, b: a % b if b != 0 else raise_(ValueError("取模运算的除数不能为零"))
     }
-
-    def __init__(self):
-        # 添加复数运算支持
+    
+    def __init__(self, translator):
+        self.translator = translator
+        # 添加复数运算符
         self.OPERATORS.update({
             '+c': lambda a, b: complex(a) + complex(b),
             '-c': lambda a, b: complex(a) - complex(b),
             '*c': lambda a, b: complex(a) * complex(b),
-            '/c': lambda a, b: complex(a) / complex(b) if b != 0 else raise_(ValueError("除数不能为零"))
+            '/c': lambda a, b: complex(a) / complex(b) if b != 0 else raise_(ValueError(self.translator.translate("error.division_by_zero")))
         })
         
         self.FUNCTIONS.update({
-            'abs_c': (abs, 1, lambda x: isinstance(x, complex), "需要复数参数"),
-            'real': (lambda x: x.real, 1, lambda x: isinstance(x, complex), "需要复数参数"),
-            'imag': (lambda x: x.imag, 1, lambda x: isinstance(x, complex), "需要复数参数")
+            'abs_c': (abs, 1, lambda x: isinstance(x, complex), self.translator.translate("error.complex_required")),
+            'real': (lambda x: x.real, 1, lambda x: isinstance(x, complex), self.translator.translate("error.complex_required")),
+            'imag': (lambda x: x.imag, 1, lambda x: isinstance(x, complex), self.translator.translate("error.complex_required"))
         })
     
     @handle_errors
@@ -199,19 +198,25 @@ class CalculatorCore:
         return self.OPERATORS[operator](num1, num2)
     
     @handle_errors
-    def process_function(self, func_name, param):
-        """处理数学函数"""
+    def process_function(self, func_name, value):
+        """处理函数调用
+        
+        支持的函数：
+        - 三角函数：sin, cos, tan（输入为角度）
+        - 数学函数：sqrt, log, log10, abs
+        """
         if func_name not in self.FUNCTIONS:
             raise ValueError(f"不支持的函数: {func_name}")
-        
-        func, arg_count, validator, err_msg = self.FUNCTIONS[func_name]
-        if arg_count != 1:
-            raise ValueError("暂不支持多参数函数")
-        
-        if not validator(param):
-            raise ValueError(err_msg or "参数验证失败")
-        
-        return func(param)
+            
+        func, _, validator, error_msg = self.FUNCTIONS[func_name]
+        if not validator(value):
+            raise ValueError(error_msg)
+            
+        if func_name in ('sin', 'cos', 'tan'):
+            # 将角度转换为弧度
+            value = math.radians(value)
+            
+        return func(value)
 
 # 在类外添加辅助函数
 def raise_(ex):
@@ -231,9 +236,10 @@ class CalculatorUI:
         core (CalculatorCore): 计算器核心实例
         history (HistoryManager): 历史记录管理器实例
     """
-    def __init__(self, core, history):
+    def __init__(self, core, history, translator):  # 添加 translator 参数
         self.core = core
         self.history = history
+        self.translator = translator  # 保存翻译器实例
         self.setup_autocomplete()
 
     def setup_autocomplete(self):
@@ -253,30 +259,16 @@ class CalculatorUI:
 
     def display_help(self):
         """显示帮助信息"""
-        print(f"\n{Fore.CYAN}帮助信息:{Style.RESET_ALL}")
-        print(f"{Fore.GREEN}基本运算:{Style.RESET_ALL} 3 + 5, 2.5e3 * -1.5")
-        print(f"{Fore.GREEN}函数调用:{Style.RESET_ALL} sin(30), log(100), sqrt(25)")
-        print(f"{Fore.GREEN}复数运算:{Style.RESET_ALL} 1 +c 2j, 3 *c (1+2j)")
-        print(f"{Fore.GREEN}支持函数:{Style.RESET_ALL} {', '.join(CalculatorCore.FUNCTIONS.keys())}")
-        print(f"{Fore.GREEN}命令:{Style.RESET_ALL}")
-        print("  q - 退出  h - 帮助  c - 清屏  l - 历史  m - 多行模式")
+        print(f"\n{Fore.CYAN}{self.translator.translate('help_title')}{Style.RESET_ALL}")
+        print(f"{Fore.GREEN}{self.translator.translate('basic_ops')}: {Style.RESET_ALL}3 + 5, 2.5e3 * -1.5")
+        print(f"{Fore.GREEN}{self.translator.translate('func_call')}: {Style.RESET_ALL}sin(30), log(100), sqrt(25)")
+        print(f"{Fore.GREEN}{self.translator.translate('complex_ops')}: {Style.RESET_ALL}1 +c 2j, 3 *c (1+2j)")
+        print(f"{Fore.GREEN}{self.translator.translate('supported_funcs')}: {Style.RESET_ALL}{', '.join(CalculatorCore.FUNCTIONS.keys())}")
+        print(f"{Fore.GREEN}{self.translator.translate('commands')}: {Style.RESET_ALL}")
+        print(f"  q - {self.translator.translate('exit')}  h - {self.translator.translate('help')}  c - {self.translator.translate('clear')}  l - {self.translator.translate('history')}  m - {self.translator.translate('multiline')}")
 
     def get_expression(self):
-        """获取用户输入（支持多行）
-        
-        输入处理规则：
-        1. 单行模式：直接返回输入的表达式
-        2. 多行模式：
-           - 空行表示输入结束
-           - 合并所有行并去除多余空格
-        3. 命令处理：
-           - 检查是否是特殊命令(q,h,c,l,m)
-           - 是命令则直接返回命令字符
-        
-        返回：
-            str: 处理后的表达式或命令
-        """
-        print(f"{Fore.YELLOW}输入表达式（输入空行结束多行输入）:{Style.RESET_ALL}")
+        print(f"{Fore.YELLOW}{self.translator.translate('multiline_prompt')}{Style.RESET_ALL}")
         lines = []
         while True:
             line = input("> ").strip()
@@ -314,6 +306,9 @@ def get_resource_path(relative_path):
 class ScientificCalculator:
     def __init__(self):
         try:
+            # 设置翻译器（移到最前面）
+            self.translator = Translator()
+            
             # 加载配置
             config_path = get_resource_path('config.yaml')
             with open(config_path, 'r') as f:
@@ -322,58 +317,32 @@ class ScientificCalculator:
             # 设置日志
             self.logger = setup_logger()
             
-            # 设置翻译器
-            self.translator = Translator()
-            
             # 检查更新
             try:
                 has_update, latest_version = check_update()
                 if has_update:
-                    print(f"发现新版本：{latest_version}")
+                    print(f"{Fore.YELLOW}{self.translator.translate('update_available')}: {latest_version}{Style.RESET_ALL}")
             except Exception as e:
-                print(f"{Fore.YELLOW}警告: 更新检查失败 - {str(e)}{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}{self.translator.translate('error.update_check_failed')}: {str(e)}{Style.RESET_ALL}")
             
             # 初始化其他组件
             self.history = HistoryManager()
-            self.core = CalculatorCore()
-            self.ui = CalculatorUI(self.core, self.history)
+            self.core = CalculatorCore(self.translator)
+            self.ui = CalculatorUI(self.core, self.history, self.translator)
             
         except Exception as e:
-            print(f"{Fore.RED}初始化失败: {str(e)}{Style.RESET_ALL}")
+            print(f"{Fore.RED}{self.translator.translate('error.init_failed')}: {str(e)}{Style.RESET_ALL}")
             sys.exit(1)
 
     def run(self):
-        """运行计算器主循环
-        
-        主循环处理流程：
-        1. 输入处理：
-           - 多行模式：使用 get_expression 获取多行输入
-           - 单行模式：直接获取单行输入
-        
-        2. 命令处理：
-           - q: 退出程序
-           - h: 显示帮助
-           - c: 清屏
-           - l: 显示历史
-           - m: 切换多行模式
-        
-        3. 表达式处理：
-           - 解析表达式
-           - 执行计算
-           - 显示结果
-           - 记录历史
-        
-        4. 异常处理：
-           - 捕获键盘中断（Ctrl+C）
-           - 优雅退出
-        """
-        print(f"{Fore.BLUE}高级科学计算器（输入 'h' 查看帮助）{Style.RESET_ALL}")
+        print(f"{Fore.BLUE}{self.translator.translate('welcome')}{Style.RESET_ALL}")
+        # 修改这里的硬编码中文
         multi_line_mode = False
 
         while True:
             try:
                 expr = self.ui.get_expression() if multi_line_mode else \
-                    input("\n输入表达式（或命令）: ").strip()
+                    input(f"\n{self.translator.translate('prompt')}").strip()
 
                 if not expr:
                     continue
@@ -392,13 +361,13 @@ class ScientificCalculator:
                     continue
                 if expr == 'm':
                     multi_line_mode = not multi_line_mode
-                    print(f"多行模式 {'已启用' if multi_line_mode else '已关闭'}")
+                    print(self.translator.translate('multiline_enabled' if multi_line_mode else 'multiline_disabled'))
                     continue
 
                 # 解析和执行表达式
                 result, record = self.process_expression(expr)
                 if result is not None:
-                    print(f"{Fore.GREEN}结果: {result:.6g}{Style.RESET_ALL}")
+                    print(f"{Fore.GREEN}{self.translator.translate('result')}: {result:.6g}{Style.RESET_ALL}")
                     self.history.add_record(record)
 
             except KeyboardInterrupt:
@@ -406,38 +375,57 @@ class ScientificCalculator:
                 break
 
     def process_expression(self, expr):
-        # 清理输入并解析
-        expr = re.sub(r'\s+', ' ', expr).strip()
-
-        # 尝试匹配函数调用
-        if func_match := re.match(r"^([a-z]+)\(?([+-]?\d+\.?\d*(?:e[+-]?\d+)?(?:[+-]?\d*\.?\d*j)?)\)?$", expr, re.I):
-            func_name, param = func_match.groups()
+        """处理表达式并返回结果
+        
+        支持的表达式格式：
+        1. 函数调用：sin(30), log(100)
+        2. 基本运算：2+3, 5*6
+        3. 复数运算：(1+2j)+(2+3j), (2+3j)*(1+1j)
+        """
+        expr = expr.strip()
+        
+        # 匹配函数调用
+        func_match = re.match(r"^([a-z_]+)\((.*)\)$", expr)
+        if func_match:
+            func_name, arg = func_match.groups()
             try:
-                param = complex(param) if 'j' in param else float(param)
+                # 尝试解析复数参数
+                arg = complex(arg) if 'j' in arg else float(arg)
+                result = self.core.process_function(func_name, arg)
+                return result, f"{func_name}({arg})={result:.6g}"
             except ValueError:
-                raise ValueError("无效的参数格式")
-            result = self.core.process_function(func_name.lower(), param)
-            return result, f"{func_name}({param}) = {result:.6g}"
-
-        # 尝试匹配二元运算
-        if bin_match := re.match(r"^([+-]?\d+\.?\d*(?:e[+-]?\d+)?(?:[+-]?\d*\.?\d*j)?)([+\-*/%^c])([+-]?\d+\.?\d*(?:e[+-]?\d+)?(?:[+-]?\d*\.?\d*j)?)$", expr, re.I):
-            num1_str, operator, num2_str = bin_match.groups()
+                pass
+    
+        # 匹配复数运算
+        complex_match = re.match(r"^\((.*?)\)\s*([+\-*/])\s*\((.*?)\)$", expr)
+        if complex_match:
             try:
-                num1 = complex(num1_str) if 'j' in num1_str else float(num1_str)
-                num2 = complex(num2_str) if 'j' in num2_str else float(num2_str)
+                num1, op, num2 = complex_match.groups()
+                num1 = complex(num1)
+                num2 = complex(num2)
+                if isinstance(num1, complex) or isinstance(num2, complex):
+                    result = self.core.calculate(num1, num2, f"{op}c")
+                    return result, f"({num1}){op}({num2})={result}"
             except ValueError:
-                raise ValueError("无效的数字格式")
-            result = self.core.calculate(num1, num2, operator)
-            return result, f"{num1_str}{operator}{num2_str}={result:.6g}"
+                pass
+    
+        # 匹配基本运算
+        basic_match = re.match(r"^([+-]?\d+\.?\d*(?:e[+-]?\d+)?)([+\-*/%^])([+-]?\d+\.?\d*(?:e[+-]?\d+)?)$", expr)
+        if basic_match:
+            num1, op, num2 = basic_match.groups()
+            result = self.core.calculate(float(num1), float(num2), op)
+            return result, f"{num1}{op}{num2}={result}"
 
         raise ValueError("无法识别的表达式格式")
 
     def show_history(self):
         """显示历史记录"""
-        print(f"\n{Fore.CYAN}最近计算记录:{Style.RESET_ALL}")
-        for idx, item in enumerate(self.history.get_recent_history(), 1):
-            print(f"{Fore.YELLOW}{idx}.{Style.RESET_ALL} {item}")
+        print(f"\n{self.translator.translate('recent_calculations')}")
+        for i, record in enumerate(self.history.get_recent_history(), 1):
+            print(f"{i}. {record}")
+        print()
 
 if __name__ == "__main__":
+    os.environ['LANG'] = 'en_US'
     ScientificCalculator().run()
     

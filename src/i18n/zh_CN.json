@@ -1,0 +1,16 @@
+{
+    "basic_calc": "基本计算",
+    "unit_conv": "单位转换",
+    "history": "历史记录",
+    "help_title": "帮助信息",
+    "basic_ops": "基本运算",
+    "func_call": "函数调用",
+    "result": "结果",
+    "exit": "退出",
+    "welcome": "高级科学计算器（输入 'h' 查看帮助）",
+    "prompt": "输入表达式（或命令）: ",
+    "history_title": "最近计算记录:",
+    "multiline_enabled": "多行模式已启用",
+    "multiline_disabled": "多行模式已关闭",
+    "multiline_prompt": "输入表达式（输入空行结束多行输入）:"
+}

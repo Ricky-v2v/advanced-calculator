@@ -19,8 +19,8 @@
 
 1. 克隆仓库：
 ```bash
-git clone <repository-url>
-cd Calculator
+git clone https://github.com/ricky-v2v/advanced-calculator.git
+cd advanced-calculator
 
 
 2. 安装依赖：
@@ -28,27 +28,6 @@ cd Calculator
 pip install -r requirements.txt
  ```
 
-## 使用方法
-### 命令行界面
-运行命令行版本：
-
-```bash
-python calculator_cli.py
- ```
-
-支持的命令：
-
-- q: 退出程序
-- h: 显示帮助
-- c: 清屏
-- l: 显示历史
-- m: 切换多行模式
-### 图形界面
-运行图形界面版本：
-
-```bash
-python gui_calculator.py
- ```
 
 ## 构建可执行文件
 使用 PyInstaller 构建独立可执行文件：
@@ -59,16 +38,31 @@ python build.py
 
 ## 项目结构
 ```plaintext
-Calculator/
-├── calculator_cli.py    # 命令行界面主程序
-├── gui_calculator.py    # 图形界面主程序
-├── build.py            # 构建脚本
-├── config.yaml         # 配置文件
-├── i18n/              # 国际化文件
-│   └── zh_CN.json     # 中文翻译
-└── utils/             # 工具模块
-    ├── logger.py      # 日志工具
-    └── version_checker.py  # 版本检查
+advanced-calculator/
+├── src/
+│   ├── calculator_cli.py    # 命令行界面主程序
+│   ├── gui_calculator.py    # 图形界面主程序
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── logger.py       # 日志工具
+│   │   └── version_checker.py  # 版本检查
+│   └── i18n/
+│       ├── __init__.py
+│       └── zh_CN.json      # 中文翻译
+├── tests/
+│   └── unit/
+│       ├── __init__.py
+│       ├── test_calculator_core.py
+│       ├── test_calculator_ui.py
+│       ├── test_history_manager.py
+│       └── test_scientific_calculator.py
+├── config.yaml             # 配置文件
+├── build.py               # 构建脚本
+├── requirements.txt       # 项目依赖
+├── README.md             # 中文文档
+├── README_EN.md          # 英文文档
+└── calc_history.json     # 历史记录文件
+
  ```
 
 ## 开发说明

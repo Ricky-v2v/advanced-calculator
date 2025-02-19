@@ -1,10 +1,10 @@
 from enum import Enum
 
 class UnitType(Enum):
-    LENGTH = "长度"
-    WEIGHT = "重量"
-    TEMPERATURE = "温度"
-    AREA = "面积"
+    LENGTH = "Length"
+    WEIGHT = "Weight"
+    TEMPERATURE = "Temperature"
+    AREA = "Area"
 
 class UnitConverter:
     """单位转换器类
@@ -62,8 +62,8 @@ class UnitConverter:
                 break
         
         if unit_type is None:
-            raise ValueError(f"不支持的单位转换: {from_unit} -> {to_unit}")
-
+            raise ValueError(f"Unsupported unit conversion: {from_unit} -> {to_unit}")
+        
         # 温度需要特殊处理
         if unit_type == UnitType.TEMPERATURE:
             # 先转换为摄氏度

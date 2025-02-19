@@ -1,0 +1,64 @@
+{
+    "basic_calc": "Basic Calculator",
+    "unit_conv": "Unit Conversion",
+    "history": "History",
+    "help_title": "Help Information",
+    "basic_ops": "Basic Operations",
+    "func_call": "Function Call",
+    "complex_ops": "Complex Operations",
+    "supported_funcs": "Supported Functions",
+    "commands": "Commands",
+    "result": "Result",
+    "exit": "Exit",
+    "help": "Help",
+    "clear": "Clear",
+    "multiline": "Multi-line",
+    "welcome": "Advanced Scientific Calculator (Enter 'h' for help)",
+    "prompt": "Enter expression (or command): ",
+    "history_title": "Recent Calculations:",
+    "multiline_enabled": "Multi-line mode enabled",
+    "multiline_disabled": "Multi-line mode disabled",
+    "multiline_prompt": "Enter expression (press Enter twice to finish):",
+    "error": {
+        "negative_sqrt": "Cannot calculate square root of negative number",
+        "invalid_tan": "Tangent is undefined for multiples of 90 degrees",
+        "positive_required": "Positive number required",
+        "division_by_zero": "Division by zero",
+        "init_failed": "Initialization failed",
+        "invalid_expression": "Invalid expression format",
+        "invalid_operator": "Unsupported operator: {}",
+        "invalid_function": "Unsupported function: {}"
+    }
+}
+```
+<mcfile name="src/i18n/en_US.json" path="/Users/rzhu/Documents/Python_DPs/advanced-calculator/src/i18n/en_US.json"></mcfile> 中包含所需的翻译：
+```json
+{
+    "calculator_title": "Advanced Scientific Calculator",
+    "basic_calc": "Basic Calculator",
+    "unit_converter": "Unit Converter",
+    "history": "History",
+    "enter_expression": "Enter expression...",
+    "clear": "C",
+    "unit_type": "Unit Type:",
+    "value": "Value:",
+    "from": "From:",
+    "to": "To:",
+    "convert": "Convert",
+    "search_history": "Search history...",
+    "unit_conversion_record": "Unit Conversion: {} {} -> {} {}",
+    "recent_calculations": "Recent Calculations:",
+    "unit_types": {
+        "length": "Length",
+        "weight": "Weight",
+        "temperature": "Temperature",
+        "area": "Area"
+    },
+    "error": {
+        "title": "Error",
+        "calc_error": "Calculation error: {}",
+        "value_required": "Please enter a value",
+        "convert_error": "Conversion error: {}"
+    }
+}
+```

@@ -19,8 +19,8 @@ A powerful scientific calculator with both command-line and graphical interfaces
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd Calculator
+git clone https://github.com/ricky-v2v/advanced-calculator.git
+cd advanced-calculator
 
 2. Install dependencies:
 ```bash
@@ -28,26 +28,6 @@ pip install -r requirements.txt
  ```
 
 ## Usage
-### Command Line Interface
-Run the CLI version:
-
-```bash
-python calculator_cli.py
- ```
-
-Available commands:
-
-- q: Quit program
-- h: Show help
-- c: Clear screen
-- l: Show history
-- m: Toggle multi-line mode
-### Graphical Interface
-Run the GUI version:
-
-```bash
-python gui_calculator.py
- ```
 
 ## Building Executable
 Build standalone executable using PyInstaller:
@@ -58,16 +38,30 @@ python build.py
 
 ## Project Structure
 ```plaintext
-Calculator/
-├── calculator_cli.py    # Command line interface
-├── gui_calculator.py    # Graphical interface
-├── build.py            # Build script
-├── config.yaml         # Configuration file
-├── i18n/              # Internationalization
-│   └── zh_CN.json     # Chinese translation
-└── utils/             # Utility modules
-    ├── logger.py      # Logging utility
-    └── version_checker.py  # Version checker
+advanced-calculator/
+├── src/
+│   ├── calculator_cli.py    # 命令行界面主程序
+│   ├── gui_calculator.py    # 图形界面主程序
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── logger.py       # 日志工具
+│   │   └── version_checker.py  # 版本检查
+│   └── i18n/
+│       ├── __init__.py
+│       └── zh_CN.json      # 中文翻译
+├── tests/
+│   └── unit/
+│       ├── __init__.py
+│       ├── test_calculator_core.py
+│       ├── test_calculator_ui.py
+│       ├── test_history_manager.py
+│       └── test_scientific_calculator.py
+├── config.yaml             # 配置文件
+├── build.py               # 构建脚本
+├── requirements.txt       # 项目依赖
+├── README.md             # 中文文档
+├── README_EN.md          # 英文文档
+└── calc_history.json     # 历史记录文件
  ```
 
 ## Development Notes
